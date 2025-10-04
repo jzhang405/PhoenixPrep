@@ -6,7 +6,8 @@
       "Bash(git push:*)",
       "Bash(git branch:*)",
       "Bash(.specify/scripts/bash/create-new-feature.sh:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }
