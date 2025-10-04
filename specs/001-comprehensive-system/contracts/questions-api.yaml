@@ -1,0 +1,334 @@
+openapi: 3.0.3
+info:
+  title: 问题管理API
+  description: 管理题目资源、搜索和筛选
+  version: 1.0.0
+
+paths:
+  /api/questions:
+    get:
+      summary: 搜索题目
+      description: 根据知识点、难度、年份等条件搜索题目
+      tags:
+        - 题目
+      parameters:
+        - name: subject
+          in: query
+          schema:
+            type: string
+            enum: [math, chinese, english, physics, chemistry, biology]
+          description: 学科
+        - name: knowledge_points
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          description: 知识点列表
+        - name: difficulty_min
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+          description: 最小难度
+        - name: difficulty_max
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+          description: 最大难度
+        - name: year_min
+          in: query
+          schema:
+            type: integer
+          description: 最小年份
+        - name: year_max
+          in: query
+          schema:
+            type: integer
+          description: 最大年份
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: 页码
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: 每页数量
+      responses:
+        '200':
+          description: 搜索成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Question'
+                  total_count:
+                    type: integer
+                  page:
+                    type: integer
+                  page_size:
+                    type: integer
+                  total_pages:
+                    type: integer
+
+    post:
+      summary: 创建题目
+      description: 创建新的题目资源
+      tags:
+        - 题目
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateQuestionRequest'
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '400':
+          description: 请求参数错误
+
+  /api/questions/{question_id}:
+    get:
+      summary: 获取题目详情
+      description: 获取指定题目的详细信息
+      tags:
+        - 题目
+      parameters:
+        - name: question_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '404':
+          description: 题目不存在
+
+    put:
+      summary: 更新题目
+      description: 更新题目信息
+      tags:
+        - 题目
+      parameters:
+        - name: question_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateQuestionRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '404':
+          description: 题目不存在
+
+  /api/questions/batch:
+    post:
+      summary: 批量创建题目
+      description: 批量创建多个题目
+      tags:
+        - 题目
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                questions:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CreateQuestionRequest'
+              required:
+                - questions
+      responses:
+        '201':
+          description: 批量创建成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  created_count:
+                    type: integer
+                  failed_count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        success:
+                          type: boolean
+                        question_id:
+                          type: string
+                          format: uuid
+                        error:
+                          type: string
+
+components:
+  schemas:
+    Question:
+      type: object
+      properties:
+        question_id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        question_type:
+          type: string
+          enum: [single_choice, multiple_choice, fill_blank, essay]
+        difficulty:
+          type: integer
+          minimum: 1
+          maximum: 5
+        subject:
+          type: string
+        knowledge_points:
+          type: array
+          items:
+            type: string
+        media_attachments:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [image, formula, table]
+              url:
+                type: string
+              alt_text:
+                type: string
+        answer:
+          type: string
+        explanation:
+          type: string
+        source:
+          type: string
+        year:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    CreateQuestionRequest:
+      type: object
+      properties:
+        content:
+          type: string
+        question_type:
+          type: string
+          enum: [single_choice, multiple_choice, fill_blank, essay]
+        difficulty:
+          type: integer
+          minimum: 1
+          maximum: 5
+        subject:
+          type: string
+        knowledge_points:
+          type: array
+          items:
+            type: string
+        media_attachments:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [image, formula, table]
+              url:
+                type: string
+              alt_text:
+                type: string
+        answer:
+          type: string
+        explanation:
+          type: string
+        source:
+          type: string
+        year:
+          type: integer
+      required:
+        - content
+        - question_type
+        - difficulty
+        - subject
+        - knowledge_points
+        - answer
+
+    UpdateQuestionRequest:
+      type: object
+      properties:
+        content:
+          type: string
+        question_type:
+          type: string
+          enum: [single_choice, multiple_choice, fill_blank, essay]
+        difficulty:
+          type: integer
+          minimum: 1
+          maximum: 5
+        subject:
+          type: string
+        knowledge_points:
+          type: array
+          items:
+            type: string
+        media_attachments:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [image, formula, table]
+              url:
+                type: string
+              alt_text:
+                type: string
+        answer:
+          type: string
+        explanation:
+          type: string
+        source:
+          type: string
+        year:
+          type: integer

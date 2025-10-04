@@ -1,0 +1,425 @@
+openapi: 3.0.3
+info:
+  title: 学习分析API
+  description: 学生表现分析、知识点掌握评估和个性化推荐
+  version: 1.0.0
+
+paths:
+  /api/analysis/performance:
+    get:
+      summary: 获取学习表现
+      description: 获取学生的整体学习表现和知识点掌握情况
+      tags:
+        - 分析
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: 学生ID
+        - name: time_range
+          in: query
+          schema:
+            type: string
+            enum: [week, month, quarter, year, all]
+            default: month
+          description: 时间范围
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                    format: uuid
+                  overall_score:
+                    type: number
+                    format: float
+                    description: 总体得分
+                  accuracy_rate:
+                    type: number
+                    format: float
+                    description: 正确率
+                  average_time_per_question:
+                    type: number
+                    format: float
+                    description: 平均每题用时
+                  knowledge_points:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/KnowledgePointPerformance'
+                  weak_areas:
+                    type: array
+                    items:
+                      type: string
+                    description: 薄弱知识点
+                  improvement_trend:
+                    type: number
+                    format: float
+                    description: 进步趋势
+
+  /api/analysis/predict-score:
+    post:
+      summary: 预测高考成绩
+      description: 基于当前掌握程度预测高考成绩
+      tags:
+        - 分析
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  format: uuid
+                  description: 学生ID
+                target_subject:
+                  type: string
+                  enum: [math, chinese, english, physics, chemistry, biology]
+                  description: 目标学科
+              required:
+                - user_id
+                - target_subject
+      responses:
+        '200':
+          description: 预测成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                    format: uuid
+                  target_subject:
+                    type: string
+                  predicted_score:
+                    type: integer
+                    description: 预测分数
+                  confidence_level:
+                    type: number
+                    format: float
+                    description: 置信度
+                  key_factors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        knowledge_point:
+                          type: string
+                        impact:
+                          type: number
+                          format: float
+                        recommendation:
+                          type: string
+
+  /api/analysis/recommendations:
+    get:
+      summary: 获取学习推荐
+      description: 获取个性化学习推荐和练习计划
+      tags:
+        - 分析
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: 学生ID
+        - name: recommendation_type
+          in: query
+          schema:
+            type: string
+            enum: [practice, review, test, all]
+            default: all
+          description: 推荐类型
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                    format: uuid
+                  recommendations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Recommendation'
+                  study_plan:
+                    $ref: '#/components/schemas/StudyPlan'
+
+  /api/analysis/progress:
+    get:
+      summary: 获取学习进度
+      description: 获取学生的学习进度和趋势分析
+      tags:
+        - 分析
+      parameters:
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: 学生ID
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: 开始日期
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: 结束日期
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                    format: uuid
+                  progress_data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DailyProgress'
+                  trends:
+                    type: object
+                    properties:
+                      accuracy_trend:
+                        type: number
+                        format: float
+                      speed_trend:
+                        type: number
+                        format: float
+                      knowledge_growth:
+                        type: number
+                        format: float
+
+  /api/analysis/generate-test:
+    post:
+      summary: 生成定制试卷
+      description: 基于学生水平和目标生成个性化试卷
+      tags:
+        - 分析
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestGenerationRequest'
+      responses:
+        '200':
+          description: 生成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneratedTest'
+
+components:
+  schemas:
+    KnowledgePointPerformance:
+      type: object
+      properties:
+        knowledge_point_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        proficiency_level:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+        accuracy_rate:
+          type: number
+          format: float
+        average_time:
+          type: number
+          format: float
+        weak_indicator:
+          type: boolean
+        recommendation_priority:
+          type: integer
+          minimum: 1
+          maximum: 5
+
+    Recommendation:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [practice, review, test]
+        priority:
+          type: integer
+          minimum: 1
+          maximum: 5
+        title:
+          type: string
+        description:
+          type: string
+        knowledge_points:
+          type: array
+          items:
+            type: string
+        estimated_time:
+          type: integer
+          description: 预计用时(分钟)
+        resources:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [question, video, article]
+              id:
+                type: string
+              title:
+                type: string
+
+    StudyPlan:
+      type: object
+      properties:
+        plan_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        target_score:
+          type: integer
+        duration_weeks:
+          type: integer
+        weekly_schedule:
+          type: array
+          items:
+            type: object
+            properties:
+              week:
+                type: integer
+              focus_areas:
+                type: array
+                items:
+                  type: string
+              daily_tasks:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DailyTask'
+
+    DailyTask:
+      type: object
+      properties:
+        day:
+          type: integer
+        tasks:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [practice, review, test, break]
+              description:
+                type: string
+              estimated_time:
+                type: integer
+
+    DailyProgress:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        questions_answered:
+          type: integer
+        accuracy_rate:
+          type: number
+          format: float
+        average_time:
+          type: number
+          format: float
+        knowledge_points_covered:
+          type: integer
+
+    TestGenerationRequest:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        subject:
+          type: string
+          enum: [math, chinese, english, physics, chemistry, biology]
+        difficulty_level:
+          type: string
+          enum: [easy, medium, hard, exam_simulation]
+        focus_areas:
+          type: array
+          items:
+            type: string
+        time_limit:
+          type: integer
+          description: 时间限制(分钟)
+        question_count:
+          type: integer
+          minimum: 5
+          maximum: 100
+
+    GeneratedTest:
+      type: object
+      properties:
+        test_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        subject:
+          type: string
+        total_questions:
+          type: integer
+        time_limit:
+          type: integer
+        estimated_difficulty:
+          type: string
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TestQuestion'
+
+    TestQuestion:
+      type: object
+      properties:
+        question_id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        question_type:
+          type: string
+        difficulty:
+          type: integer
+        knowledge_points:
+          type: array
+          items:
+            type: string
+        points:
+          type: integer
+          description: 分值

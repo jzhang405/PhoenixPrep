@@ -1,0 +1,164 @@
+openapi: 3.0.3
+info:
+  title: 试卷上传API
+  description: 处理PDF、WORD、图片格式试卷的上传和解析
+  version: 1.0.0
+
+paths:
+  /api/upload:
+    post:
+      summary: 上传试卷文件
+      description: 上传PDF、WORD或图片格式的试卷文件进行解析
+      tags:
+        - 上传
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 试卷文件
+                subject:
+                  type: string
+                  enum: [math, chinese, english, physics, chemistry, biology]
+                  description: 学科
+                description:
+                  type: string
+                  description: 文件描述
+              required:
+                - file
+                - subject
+      responses:
+        '200':
+          description: 上传成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  upload_id:
+                    type: string
+                    format: uuid
+                    description: 上传记录ID
+                  status:
+                    type: string
+                    enum: [uploading, parsing, completed, failed]
+                    description: 处理状态
+                  message:
+                    type: string
+                    description: 状态消息
+        '400':
+          description: 请求参数错误
+        '413':
+          description: 文件太大
+        '415':
+          description: 不支持的文件格式
+
+  /api/upload/{upload_id}/status:
+    get:
+      summary: 获取上传状态
+      description: 查询文件上传和解析的进度状态
+      tags:
+        - 上传
+      parameters:
+        - name: upload_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 状态查询成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  upload_id:
+                    type: string
+                    format: uuid
+                  filename:
+                    type: string
+                  file_type:
+                    type: string
+                  status:
+                    type: string
+                    enum: [uploading, parsing, completed, failed]
+                  progress:
+                    type: integer
+                    minimum: 0
+                    maximum: 100
+                    description: 处理进度百分比
+                  parsed_questions:
+                    type: integer
+                    description: 已解析题目数量
+                  error_message:
+                    type: string
+                    description: 错误信息（如果有）
+        '404':
+          description: 上传记录不存在
+
+  /api/upload/{upload_id}/result:
+    get:
+      summary: 获取解析结果
+      description: 获取已解析完成的试卷内容
+      tags:
+        - 上传
+      parameters:
+        - name: upload_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 获取成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  upload_id:
+                    type: string
+                    format: uuid
+                  filename:
+                    type: string
+                  parsed_content:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        description: 试卷标题
+                      subject:
+                        type: string
+                      total_questions:
+                        type: integer
+                      questions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            content:
+                              type: string
+                            question_type:
+                              type: string
+                            difficulty:
+                              type: integer
+                            knowledge_points:
+                              type: array
+                              items:
+                                type: string
+                            answer:
+                              type: string
+                            explanation:
+                              type: string
+        '404':
+          description: 上传记录不存在
+        '422':
+          description: 解析尚未完成
