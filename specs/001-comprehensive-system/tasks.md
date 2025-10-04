@@ -80,70 +80,75 @@
 - [ ] T030 [P] 文件上传模型在 backend/src/models/file_upload.py
 - [ ] T031 [P] 文件上传服务在 backend/src/services/file_upload.py
 - [ ] T032 [P] PDF解析服务在 backend/src/services/pdf_parser.py
-- [ ] T033 [P] 问题服务在 backend/src/services/question_service.py
-- [ ] T034 [P] 分析服务在 backend/src/services/analysis_service.py
-- [ ] T035 [P] 推荐服务在 backend/src/services/recommendation_service.py
-- [ ] T036 [P] 知识分析智能体在 backend/src/agents/knowledge_analyzer.py
-- [ ] T037 [P] 问题生成智能体在 backend/src/agents/question_generator.py
-- [ ] T038 [P] 表现预测智能体在 backend/src/agents/performance_predictor.py
-- [ ] T039 POST /api/upload 端点
-- [ ] T040 GET /api/upload/{upload_id}/status 端点
-- [ ] T041 GET /api/upload/{upload_id}/result 端点
-- [ ] T042 GET /api/questions 端点
-- [ ] T043 POST /api/questions 端点
-- [ ] T044 GET /api/questions/{question_id} 端点
-- [ ] T045 PUT /api/questions/{question_id} 端点
-- [ ] T046 POST /api/questions/batch 端点
-- [ ] T047 GET /api/analysis/performance 端点
-- [ ] T048 POST /api/analysis/predict-score 端点
-- [ ] T049 GET /api/analysis/recommendations 端点
-- [ ] T050 GET /api/analysis/progress 端点
-- [ ] T051 POST /api/analysis/generate-test 端点
-- [ ] T052 输入验证
-- [ ] T053 错误处理和日志
+- [ ] T033 [P] Word文档解析服务在 backend/src/services/word_parser.py
+- [ ] T034 [P] 图片解析服务在 backend/src/services/image_parser.py
+- [ ] T035 [P] 文档解析管理器在 backend/src/services/document_parser.py
+- [ ] T036 [P] 问题服务在 backend/src/services/question_service.py
+- [ ] T037 [P] 分析服务在 backend/src/services/analysis_service.py
+- [ ] T038 [P] 推荐服务在 backend/src/services/recommendation_service.py
+- [ ] T039 [P] 知识分析智能体在 backend/src/agents/knowledge_analyzer.py
+- [ ] T040 [P] 问题生成智能体在 backend/src/agents/question_generator.py
+- [ ] T041 [P] 表现预测智能体在 backend/src/agents/performance_predictor.py
+- [ ] T042 [P] 文档解析智能体在 backend/src/agents/document_analyzer.py
+- [ ] T043 [P] 智能体管理器在 backend/src/agents/agent_manager.py
+- [ ] T044 POST /api/upload 端点
+- [ ] T045 GET /api/upload/{upload_id}/status 端点
+- [ ] T046 GET /api/upload/{upload_id}/result 端点
+- [ ] T047 GET /api/questions 端点
+- [ ] T048 POST /api/questions 端点
+- [ ] T049 GET /api/questions/{question_id} 端点
+- [ ] T050 PUT /api/questions/{question_id} 端点
+- [ ] T051 POST /api/questions/batch 端点
+- [ ] T052 GET /api/analysis/performance 端点
+- [ ] T053 POST /api/analysis/predict-score 端点
+- [ ] T054 GET /api/analysis/recommendations 端点
+- [ ] T055 GET /api/analysis/progress 端点
+- [ ] T056 POST /api/analysis/generate-test 端点
+- [ ] T057 输入验证
+- [ ] T058 错误处理和日志
 
 ## 阶段3.4: 前端实现
-- [ ] T054 [P] 通用组件在 frontend/src/components/common/
-- [ ] T055 [P] 上传组件在 frontend/src/components/upload/
-- [ ] T056 [P] 仪表板组件在 frontend/src/components/dashboard/
-- [ ] T057 [P] 分析组件在 frontend/src/components/analysis/
-- [ ] T058 [P] 练习组件在 frontend/src/components/practice/
-- [ ] T059 [P] 上传页面在 frontend/src/pages/UploadPage.tsx
-- [ ] T060 [P] 仪表板页面在 frontend/src/pages/DashboardPage.tsx
-- [ ] T061 [P] 分析页面在 frontend/src/pages/AnalysisPage.tsx
-- [ ] T062 [P] 练习页面在 frontend/src/pages/PracticePage.tsx
-- [ ] T063 [P] 设置页面在 frontend/src/pages/SettingsPage.tsx
-- [ ] T064 [P] API服务在 frontend/src/services/api.ts
-- [ ] T065 [P] 上传服务在 frontend/src/services/upload.ts
-- [ ] T066 [P] 分析服务在 frontend/src/services/analysis.ts
-- [ ] T067 [P] 缓存服务在 frontend/src/services/cache.ts
-- [ ] T068 [P] 类型定义在 frontend/src/types/
-- [ ] T069 [P] 工具函数在 frontend/src/utils/
+- [ ] T059 [P] 通用组件在 frontend/src/components/common/
+- [ ] T060 [P] 上传组件在 frontend/src/components/upload/
+- [ ] T061 [P] 仪表板组件在 frontend/src/components/dashboard/
+- [ ] T062 [P] 分析组件在 frontend/src/components/analysis/
+- [ ] T063 [P] 练习组件在 frontend/src/components/practice/
+- [ ] T064 [P] 上传页面在 frontend/src/pages/UploadPage.tsx
+- [ ] T065 [P] 仪表板页面在 frontend/src/pages/DashboardPage.tsx
+- [ ] T066 [P] 分析页面在 frontend/src/pages/AnalysisPage.tsx
+- [ ] T067 [P] 练习页面在 frontend/src/pages/PracticePage.tsx
+- [ ] T068 [P] 设置页面在 frontend/src/pages/SettingsPage.tsx
+- [ ] T069 [P] API服务在 frontend/src/services/api.ts
+- [ ] T070 [P] 上传服务在 frontend/src/services/upload.ts
+- [ ] T071 [P] 分析服务在 frontend/src/services/analysis.ts
+- [ ] T072 [P] 缓存服务在 frontend/src/services/cache.ts
+- [ ] T073 [P] 类型定义在 frontend/src/types/
+- [ ] T074 [P] 工具函数在 frontend/src/utils/
 
 ## 阶段3.5: 集成
-- [ ] T070 连接服务到SQLite数据库
-- [ ] T071 设置ChromaDB向量存储
-- [ ] T072 认证中间件
-- [ ] T073 请求/响应日志
-- [ ] T074 CORS和安全头
-- [ ] T075 文件存储配置
+- [ ] T075 连接服务到SQLite数据库
+- [ ] T076 设置ChromaDB向量存储
+- [ ] T077 认证中间件
+- [ ] T078 请求/响应日志
+- [ ] T079 CORS和安全头
+- [ ] T080 文件存储配置
 
 ## 阶段3.6: 优化
-- [ ] T076 [P] 验证单元测试在 tests/unit/test_validation.py
-- [ ] T077 [P] 服务单元测试在 tests/unit/test_services.py
-- [ ] T078 [P] 模型单元测试在 tests/unit/test_models.py
-- [ ] T079 [P] 组件单元测试在 frontend/tests/unit/
-- [ ] T080 性能测试 (<200ms)
-- [ ] T081 [P] 更新 docs/api.md
-- [ ] T082 移除重复代码
-- [ ] T083 运行 manual-testing.md
+- [ ] T081 [P] 验证单元测试在 tests/unit/test_validation.py
+- [ ] T082 [P] 服务单元测试在 tests/unit/test_services.py
+- [ ] T083 [P] 模型单元测试在 tests/unit/test_models.py
+- [ ] T084 [P] 组件单元测试在 frontend/tests/unit/
+- [ ] T085 性能测试 (<200ms)
+- [ ] T086 [P] 更新 docs/api.md
+- [ ] T087 移除重复代码
+- [ ] T088 运行 manual-testing.md
 
 ## 依赖关系
-- 测试 (T006-T022) 在实现 (T023-T069) 之前
-- T023-T030 阻塞 T031-T038
-- T031-T038 阻塞 T039-T051
-- T054-T069 阻塞 T070-T075
-- 实现在优化 (T076-T083) 之前
+- 测试 (T006-T022) 在实现 (T023-T074) 之前
+- T023-T030 阻塞 T031-T043 (文档解析和Agent)
+- T031-T043 阻塞 T044-T058 (端点实现)
+- T059-T074 阻塞 T075-T080 (集成)
+- 实现在优化 (T081-T088) 之前
 
 ## 并行示例
 ```
@@ -176,7 +181,22 @@
 任务: "表现分析模型在 backend/src/models/performance.py"
 任务: "文件上传模型在 backend/src/models/file_upload.py"
 
-# 同时启动 T054-T069:
+# 同时启动 T031-T043 (文档解析和Agent):
+任务: "文件上传服务在 backend/src/services/file_upload.py"
+任务: "PDF解析服务在 backend/src/services/pdf_parser.py"
+任务: "Word文档解析服务在 backend/src/services/word_parser.py"
+任务: "图片解析服务在 backend/src/services/image_parser.py"
+任务: "文档解析管理器在 backend/src/services/document_parser.py"
+任务: "问题服务在 backend/src/services/question_service.py"
+任务: "分析服务在 backend/src/services/analysis_service.py"
+任务: "推荐服务在 backend/src/services/recommendation_service.py"
+任务: "知识分析智能体在 backend/src/agents/knowledge_analyzer.py"
+任务: "问题生成智能体在 backend/src/agents/question_generator.py"
+任务: "表现预测智能体在 backend/src/agents/performance_predictor.py"
+任务: "文档解析智能体在 backend/src/agents/document_analyzer.py"
+任务: "智能体管理器在 backend/src/agents/agent_manager.py"
+
+# 同时启动 T059-T074:
 任务: "通用组件在 frontend/src/components/common/"
 任务: "上传组件在 frontend/src/components/upload/"
 任务: "仪表板组件在 frontend/src/components/dashboard/"
@@ -232,4 +252,4 @@
 
 ---
 
-**任务生成完成**: 83个编号任务已创建，遵循TDD原则和依赖顺序。
+**任务生成完成**: 88个编号任务已创建，遵循TDD原则和依赖顺序。
