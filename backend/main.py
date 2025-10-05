@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from .src.api.endpoints import upload, questions, analysis, dashboard
+from .src.api.endpoints import upload, questions, analysis, dashboard, mistake, question_answer_matching
 
 app = FastAPI(
     title="凤凰备考系统API",
@@ -24,6 +24,8 @@ app.include_router(upload.router, prefix="/api", tags=["文件上传"])
 app.include_router(questions.router, prefix="/api", tags=["题目管理"])
 app.include_router(analysis.router, prefix="/api", tags=["学习分析"])
 app.include_router(dashboard.router, prefix="/api", tags=["仪表板"])
+app.include_router(mistake.router, prefix="/api", tags=["错题分析"])
+app.include_router(question_answer_matching.router, prefix="/api", tags=["试题-答案匹配"])
 
 @app.get("/")
 async def root():

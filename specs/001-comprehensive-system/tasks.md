@@ -86,73 +86,86 @@
 - [ ] T036 [P] 问题服务在 backend/src/services/question_service.py
 - [ ] T037 [P] 分析服务在 backend/src/services/analysis_service.py
 - [ ] T038 [P] 推荐服务在 backend/src/services/recommendation_service.py
-- [ ] T039 [P] 知识分析智能体在 backend/src/agents/knowledge_analyzer.py
-- [ ] T040 [P] 问题生成智能体在 backend/src/agents/question_generator.py
-- [ ] T041 [P] 表现预测智能体在 backend/src/agents/performance_predictor.py
-- [ ] T042 [P] 文档解析智能体在 backend/src/agents/document_analyzer.py
-- [ ] T043 [P] 智能体管理器在 backend/src/agents/agent_manager.py
-- [ ] T044 [P] 数据库迁移配置在 backend/alembic/
-- [ ] T045 [P] ChromaDB向量存储配置在 backend/src/storage/chroma_db.py
-- [ ] T046 [P] Logics-Parsing集成配置在 backend/src/integrations/logics_parsing.py
-- [ ] T047 [P] LangChain + CrewAI配置在 backend/src/integrations/langchain_crewai.py
-- [ ] T048 POST /api/upload 端点
-- [ ] T049 GET /api/upload/{upload_id}/status 端点
-- [ ] T050 GET /api/upload/{upload_id}/result 端点
-- [ ] T051 GET /api/questions 端点
-- [ ] T052 POST /api/questions 端点
-- [ ] T053 GET /api/questions/{question_id} 端点
-- [ ] T054 PUT /api/questions/{question_id} 端点
-- [ ] T055 POST /api/questions/batch 端点
-- [ ] T056 GET /api/analysis/performance 端点
-- [ ] T057 POST /api/analysis/predict-score 端点
-- [ ] T058 GET /api/analysis/recommendations 端点
-- [ ] T059 GET /api/analysis/progress 端点
-- [ ] T060 POST /api/analysis/generate-test 端点
-- [ ] T061 输入验证
-- [ ] T062 错误处理和日志
+- [ ] T039 [P] 错题分析服务在 backend/src/services/mistake_analysis.py
+- [ ] T040 [P] 试题-答案匹配服务在 backend/src/services/question_answer_matcher.py
+- [ ] T041 [P] 知识分析智能体在 backend/src/agents/knowledge_analyzer.py
+- [ ] T042 [P] 问题生成智能体在 backend/src/agents/question_generator.py
+- [ ] T043 [P] 表现预测智能体在 backend/src/agents/performance_predictor.py
+- [ ] T044 [P] 文档解析智能体在 backend/src/agents/document_analyzer.py
+- [ ] T045 [P] 智能体管理器在 backend/src/agents/agent_manager.py
+- [ ] T046 [P] 数据库迁移配置在 backend/alembic/
+- [ ] T047 [P] ChromaDB向量存储配置在 backend/src/storage/chroma_db.py
+- [ ] T048 [P] Logics-Parsing集成配置在 backend/src/integrations/logics_parsing.py
+- [ ] T049 [P] LangChain + CrewAI配置在 backend/src/integrations/langchain_crewai.py
+- [ ] T050 POST /api/upload 端点
+- [ ] T051 GET /api/upload/{upload_id}/status 端点
+- [ ] T052 GET /api/upload/{upload_id}/result 端点
+- [ ] T053 GET /api/questions 端点
+- [ ] T054 POST /api/questions 端点
+- [ ] T055 GET /api/questions/{question_id} 端点
+- [ ] T056 PUT /api/questions/{question_id} 端点
+- [ ] T057 POST /api/questions/batch 端点
+- [ ] T058 GET /api/analysis/performance 端点
+- [ ] T059 POST /api/analysis/predict-score 端点
+- [ ] T060 GET /api/analysis/recommendations 端点
+- [ ] T061 GET /api/analysis/progress 端点
+- [ ] T062 POST /api/analysis/generate-test 端点
+- [ ] T063 POST /api/mistake/analyze 端点
+- [ ] T064 GET /api/mistake/history/{student_id} 端点
+- [ ] T065 GET /api/mistake/statistics/{student_id} 端点
+- [ ] T066 POST /api/question-answer/match 端点
+- [ ] T067 GET /api/question-answer/match/{match_id} 端点
+- [ ] T068 POST /api/question-answer/validate-match 端点
+- [ ] T069 GET /api/question-answer/matching-methods 端点
+- [ ] T070 输入验证
+- [ ] T071 错误处理和日志
+- [ ] T072 [P] 命令行接口在 backend/cli.py
 
 ## 阶段3.4: 前端实现
-- [ ] T063 [P] 通用组件在 frontend/src/components/common/
-- [ ] T064 [P] 上传组件在 frontend/src/components/upload/
-- [ ] T065 [P] 仪表板组件在 frontend/src/components/dashboard/
-- [ ] T066 [P] 分析组件在 frontend/src/components/analysis/
-- [ ] T067 [P] 练习组件在 frontend/src/components/practice/
-- [ ] T068 [P] 上传页面在 frontend/src/pages/UploadPage.tsx
-- [ ] T069 [P] 仪表板页面在 frontend/src/pages/DashboardPage.tsx
-- [ ] T070 [P] 分析页面在 frontend/src/pages/AnalysisPage.tsx
-- [ ] T071 [P] 练习页面在 frontend/src/pages/PracticePage.tsx
-- [ ] T072 [P] 设置页面在 frontend/src/pages/SettingsPage.tsx
-- [ ] T073 [P] API服务在 frontend/src/services/api.ts
-- [ ] T074 [P] 上传服务在 frontend/src/services/upload.ts
-- [ ] T075 [P] 分析服务在 frontend/src/services/analysis.ts
-- [ ] T076 [P] 缓存服务在 frontend/src/services/cache.ts
-- [ ] T077 [P] 类型定义在 frontend/src/types/
-- [ ] T078 [P] 工具函数在 frontend/src/utils/
+- [ ] T073 [P] 通用组件在 frontend/src/components/common/
+- [ ] T074 [P] 上传组件在 frontend/src/components/upload/
+- [ ] T075 [P] 仪表板组件在 frontend/src/components/dashboard/
+- [ ] T076 [P] 分析组件在 frontend/src/components/analysis/
+- [ ] T077 [P] 练习组件在 frontend/src/components/practice/
+- [ ] T078 [P] 错题分析组件在 frontend/src/components/mistake/
+- [ ] T079 [P] 上传页面在 frontend/src/pages/UploadPage.tsx
+- [ ] T080 [P] 仪表板页面在 frontend/src/pages/DashboardPage.tsx
+- [ ] T081 [P] 分析页面在 frontend/src/pages/AnalysisPage.tsx
+- [ ] T082 [P] 练习页面在 frontend/src/pages/PracticePage.tsx
+- [ ] T083 [P] 错题分析页面在 frontend/src/pages/MistakePage.tsx
+- [ ] T084 [P] 设置页面在 frontend/src/pages/SettingsPage.tsx
+- [ ] T085 [P] API服务在 frontend/src/services/api.ts
+- [ ] T086 [P] 上传服务在 frontend/src/services/upload.ts
+- [ ] T087 [P] 分析服务在 frontend/src/services/analysis.ts
+- [ ] T088 [P] 错题分析服务在 frontend/src/services/mistake.ts
+- [ ] T089 [P] 缓存服务在 frontend/src/services/cache.ts
+- [ ] T090 [P] 类型定义在 frontend/src/types/
+- [ ] T091 [P] 工具函数在 frontend/src/utils/
 
 ## 阶段3.5: 集成
-- [ ] T079 连接服务到SQLite数据库
-- [ ] T080 设置ChromaDB向量存储
-- [ ] T081 认证中间件
-- [ ] T082 请求/响应日志
-- [ ] T083 CORS和安全头
-- [ ] T084 文件存储配置
+- [ ] T092 连接服务到SQLite数据库
+- [ ] T093 设置ChromaDB向量存储
+- [ ] T094 认证中间件
+- [ ] T095 请求/响应日志
+- [ ] T096 CORS和安全头
+- [ ] T097 文件存储配置
 
 ## 阶段3.6: 优化
-- [ ] T085 [P] 验证单元测试在 tests/unit/test_validation.py
-- [ ] T086 [P] 服务单元测试在 tests/unit/test_services.py
-- [ ] T087 [P] 模型单元测试在 tests/unit/test_models.py
-- [ ] T088 [P] 组件单元测试在 frontend/tests/unit/
-- [ ] T089 性能测试 (<200ms)
-- [ ] T090 [P] 更新 docs/api.md
-- [ ] T091 移除重复代码
-- [ ] T092 运行 manual-testing.md
+- [ ] T098 [P] 验证单元测试在 tests/unit/test_validation.py
+- [ ] T099 [P] 服务单元测试在 tests/unit/test_services.py
+- [ ] T100 [P] 模型单元测试在 tests/unit/test_models.py
+- [ ] T101 [P] 组件单元测试在 frontend/tests/unit/
+- [ ] T102 性能测试 (<200ms)
+- [ ] T103 [P] 更新 docs/api.md
+- [ ] T104 移除重复代码
+- [ ] T105 运行 manual-testing.md
 
 ## 依赖关系
-- 测试 (T006-T022) 在实现 (T023-T078) 之前
-- T023-T030 阻塞 T031-T047 (文档解析、Agent和集成配置)
-- T031-T047 阻塞 T048-T062 (端点实现)
-- T063-T078 阻塞 T079-T084 (集成)
-- 实现在优化 (T085-T092) 之前
+- 测试 (T006-T022) 在实现 (T023-T072) 之前
+- T023-T030 阻塞 T031-T049 (文档解析、Agent和集成配置)
+- T031-T049 阻塞 T050-T072 (端点实现和CLI)
+- T073-T091 阻塞 T092-T097 (集成)
+- 实现在优化 (T098-T105) 之前
 
 ## 并行示例
 ```
@@ -204,20 +217,23 @@
 任务: "Logics-Parsing集成配置在 backend/src/integrations/logics_parsing.py"
 任务: "LangChain + CrewAI配置在 backend/src/integrations/langchain_crewai.py"
 
-# 同时启动 T063-T078:
+# 同时启动 T068-T086:
 任务: "通用组件在 frontend/src/components/common/"
 任务: "上传组件在 frontend/src/components/upload/"
 任务: "仪表板组件在 frontend/src/components/dashboard/"
 任务: "分析组件在 frontend/src/components/analysis/"
 任务: "练习组件在 frontend/src/components/practice/"
+任务: "错题分析组件在 frontend/src/components/mistake/"
 任务: "上传页面在 frontend/src/pages/UploadPage.tsx"
 任务: "仪表板页面在 frontend/src/pages/DashboardPage.tsx"
 任务: "分析页面在 frontend/src/pages/AnalysisPage.tsx"
 任务: "练习页面在 frontend/src/pages/PracticePage.tsx"
+任务: "错题分析页面在 frontend/src/pages/MistakePage.tsx"
 任务: "设置页面在 frontend/src/pages/SettingsPage.tsx"
 任务: "API服务在 frontend/src/services/api.ts"
 任务: "上传服务在 frontend/src/services/upload.ts"
 任务: "分析服务在 frontend/src/services/analysis.ts"
+任务: "错题分析服务在 frontend/src/services/mistake.ts"
 任务: "缓存服务在 frontend/src/services/cache.ts"
 任务: "类型定义在 frontend/src/types/"
 任务: "工具函数在 frontend/src/utils/"
@@ -260,4 +276,4 @@
 
 ---
 
-**任务生成完成**: 92个编号任务已创建，遵循TDD原则和依赖顺序。
+**任务生成完成**: 105个编号任务已创建，遵循TDD原则和依赖顺序。
