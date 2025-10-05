@@ -94,7 +94,7 @@
 - [ ] T044 [P] 数据库迁移配置在 backend/alembic/
 - [ ] T045 [P] ChromaDB向量存储配置在 backend/src/storage/chroma_db.py
 - [ ] T046 [P] Logics-Parsing集成配置在 backend/src/integrations/logics_parsing.py
-- [ ] T047 [P] agentUniverse配置在 backend/src/integrations/agent_universe.py
+- [ ] T047 [P] LangChain + CrewAI配置在 backend/src/integrations/langchain_crewai.py
 - [ ] T048 POST /api/upload 端点
 - [ ] T049 GET /api/upload/{upload_id}/status 端点
 - [ ] T050 GET /api/upload/{upload_id}/result 端点
@@ -202,7 +202,7 @@
 任务: "数据库迁移配置在 backend/alembic/"
 任务: "ChromaDB向量存储配置在 backend/src/storage/chroma_db.py"
 任务: "Logics-Parsing集成配置在 backend/src/integrations/logics_parsing.py"
-任务: "agentUniverse配置在 backend/src/integrations/agent_universe.py"
+任务: "LangChain + CrewAI配置在 backend/src/integrations/langchain_crewai.py"
 
 # 同时启动 T063-T078:
 任务: "通用组件在 frontend/src/components/common/"

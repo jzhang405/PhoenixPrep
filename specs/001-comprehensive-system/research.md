@@ -58,16 +58,19 @@
 - Tesseract OCR: 主要针对图片OCR，不如Logics-Parsing专业
 
 ### LLM Agent框架
-**决策**: agentUniverse
+**决策**: LangChain + CrewAI
 
 **理由**:
-- 专门为中文场景优化
-- 支持多智能体协作
-- 与教育场景匹配度高
+- **LangChain**: 最流行的LLM应用开发框架，生态系统成熟，文档完善
+- **CrewAI**: 专门为多智能体协作设计，支持角色分工和任务编排
+- 两者结合提供完整的Agent开发能力，从基础LLM交互到复杂多Agent协作
+- 社区活跃，问题解决资源丰富
+- 对中文场景有良好的支持
 
 **考虑过的替代方案**:
-- LangChain: 更通用，但对中文优化不如agentUniverse
-- AutoGPT: 更偏向自动化，不适合结构化教育场景
+- **AutoGPT**: 更偏向自动化，不适合结构化教育场景
+- **agentUniverse**: 不够流行，生态系统和文档不如LangChain完善
+- **Haystack**: 更适合文档检索场景，Agent能力有限
 
 ## 架构决策
 
