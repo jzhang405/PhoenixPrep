@@ -5,7 +5,8 @@ alembic==1.12.1
 pydantic==2.5.0
 python-multipart==0.0.6
 chromadb==0.4.15
-logics-parsing==1.0.0
+# Logics-Parsing: Use local installation at /Users/zhangcz/ws/python/src/github.com/alibaba/Logics-Parsing
+# Required dependencies: modelscope, huggingface_hub, torch, transformers
 langchain==0.1.0
 crewai==0.28.8
 langchain-community==0.0.29
