@@ -355,9 +355,9 @@ def document():
 @document.command()
 @click.argument('input_path')
 @click.option('--output-path', help='输出HTML文件路径（可选，自动生成）')
-@click.option('--prompt', default='QwenVL HTML', help='解析提示词')
-async def parse(input_path, output_path, prompt):
-    """使用Logics-Parsing解析文档为HTML"""
+@click.option('--api-name', default='/pdf_parse', type=click.Choice(['/pdf_parse', '/to_pdf']), help='API端点选择')
+async def parse(input_path, output_path, api_name):
+    """使用快速Logics-Parsing解析文档"""
     try:
         if not os.path.exists(input_path):
             click.echo(f"错误: 输入文件不存在: {input_path}")
@@ -365,35 +365,41 @@ async def parse(input_path, output_path, prompt):
         
         click.echo(f"解析文档: {input_path}")
         
-        # 初始化Logics-Parsing服务
-        from src.services.logics_parsing_service import LogicsParsingService
-        logics_service = LogicsParsingService()
+        # 初始化快速Logics-Parsing服务
+        from src.services.fast_logics_parsing import FastLogicsParsingService
+        fast_service = FastLogicsParsingService()
         
         # 检查服务状态
-        status = logics_service.check_requirements()
-        if not status['all_requirements_met']:
-            click.echo("错误: Logics-Parsing服务未就绪")
+        status = fast_service.check_service_status()
+        if status['status'] != 'online':
+            click.echo(f"错误: Logics-Parsing服务不可用")
             click.echo(f"状态: {status}")
             return
         
-        # 转换文档
-        result = await logics_service.convert_to_html(
+        click.echo(f"✓ 服务状态: {status['status']}")
+        
+        # 解析文档
+        result = await fast_service.parse_document(
             input_path=input_path,
             output_path=output_path,
-            prompt=prompt
+            api_name=api_name
         )
         
         if result['success']:
             click.echo("\n=== 文档解析成功 ===")
             click.echo(f"输入文件: {result['input_path']}")
-            click.echo(f"输出文件: {result['output_path']}")
-            click.echo(f"HTML内容长度: {len(result['html_content'])} 字符")
+            click.echo(f"输出文件: {result.get('output_path', result.get('pdf_path', 'N/A'))}")
             
-            click.echo("\n📝 解析内容预览:")
-            preview = result['html_content'][:500]
-            click.echo(f"{preview}...")
-            
-            click.echo(f"\n💾 文件已保存到: {result['output_path']}")
+            if api_name == '/pdf_parse':
+                click.echo(f"HTML内容长度: {len(result['html_content'])} 字符")
+                
+                click.echo("\n📝 解析内容预览:")
+                preview = result['html_content'][:500]
+                click.echo(f"{preview}...")
+                
+                click.echo(f"\n💾 HTML文件已保存到: {result['output_path']}")
+            else:
+                click.echo(f"💾 PDF文件已生成: {result['pdf_path']}")
         else:
             click.echo(f"解析失败: {result.get('error', '未知错误')}")
             
@@ -404,23 +410,23 @@ async def parse(input_path, output_path, prompt):
 async def status():
     """检查文档解析服务状态"""
     try:
-        from src.services.logics_parsing_service import LogicsParsingService
+        from src.services.fast_logics_parsing import FastLogicsParsingService
         from src.services.document_parser import DocumentParserManager
         
         click.echo("检查文档解析服务状态...")
         
-        # 检查Logics-Parsing服务
-        logics_service = LogicsParsingService()
-        logics_status = logics_service.check_requirements()
+        # 检查快速Logics-Parsing服务
+        fast_service = FastLogicsParsingService()
+        fast_status = fast_service.check_service_status()
         
-        click.echo("\n=== Logics-Parsing 服务状态 ===")
-        click.echo(f"整体状态: {'✓ 就绪' if logics_status['all_requirements_met'] else '✗ 未就绪'}")
-        click.echo(f"模型路径: {logics_status['model_path']}")
+        click.echo("\n=== 快速Logics-Parsing 服务状态 ===")
+        click.echo(f"整体状态: {'✓ 在线' if fast_status['status'] == 'online' else '✗ 离线'}")
+        click.echo(f"API地址: {fast_status['api_url']}")
+        click.echo(f"响应时间: {fast_status.get('response_time', '未知')}")
         
-        click.echo("\n要求检查:")
-        for req_name, req_status in logics_status['requirements'].items():
-            status_icon = "✓" if req_status else "✗"
-            click.echo(f"  {status_icon} {req_name}: {'满足' if req_status else '不满足'}")
+        click.echo("\n支持的文件格式:")
+        for fmt in fast_service.get_supported_formats():
+            click.echo(f"  - {fmt}")
         
         # 检查文档解析管理器
         parser_manager = DocumentParserManager()
@@ -433,8 +439,7 @@ async def status():
         for format_type, extensions in parser_status['supported_formats'].items():
             click.echo(f"  {format_type}: {', '.join(extensions)}")
         
-        click.echo(f"\n💾 模型文件存储: {logics_service.model_path}")
-        click.echo(f"📁 解析结果存储: {logics_service.output_dir}")
+        click.echo(f"\n💾 输出目录: {fast_service.output_dir}")
         
     except Exception as e:
         click.echo(f"检查服务状态时出错: {str(e)}")
@@ -443,23 +448,18 @@ async def status():
 def download_model():
     """下载Logics-Parsing模型"""
     try:
-        from src.services.logics_parsing_service import LogicsParsingService
-        
-        click.echo("开始下载Logics-Parsing模型...")
-        
-        # 初始化服务，会自动下载模型
-        logics_service = LogicsParsingService()
-        
-        click.echo("✓ 模型下载完成")
-        click.echo(f"模型存储位置: {logics_service.model_path}")
+        click.echo("⚠️  注意: 快速服务使用远程API，无需下载本地模型")
+        click.echo("✓ 快速服务已就绪，可以直接使用")
+        click.echo("  如需使用本地模型，请参考: src/services/logics_parsing_service.py")
         
     except Exception as e:
-        click.echo(f"下载模型时出错: {str(e)}")
+        click.echo(f"操作时出错: {str(e)}")
 
 @document.command()
 @click.argument('input_files', nargs=-1)
 @click.option('--output-dir', help='输出目录（可选）')
-async def batch_parse(input_files, output_dir):
+@click.option('--api-name', default='/pdf_parse', type=click.Choice(['/pdf_parse', '/to_pdf']), help='API端点选择')
+async def batch_parse(input_files, output_dir, api_name):
     """批量解析文档"""
     try:
         if not input_files:
@@ -468,14 +468,15 @@ async def batch_parse(input_files, output_dir):
         
         click.echo(f"批量解析 {len(input_files)} 个文件...")
         
-        # 初始化Logics-Parsing服务
-        from src.services.logics_parsing_service import LogicsParsingService
-        logics_service = LogicsParsingService()
+        # 初始化快速Logics-Parsing服务
+        from src.services.fast_logics_parsing import FastLogicsParsingService
+        fast_service = FastLogicsParsingService()
         
-        # 批量转换
-        result = await logics_service.batch_convert(
+        # 批量解析
+        result = await fast_service.batch_parse(
             input_files=list(input_files),
-            output_dir=output_dir
+            output_dir=output_dir,
+            api_name=api_name
         )
         
         click.echo("\n=== 批量解析结果 ===")
@@ -488,7 +489,8 @@ async def batch_parse(input_files, output_dir):
             click.echo("\n📝 成功解析的文件:")
             for res in result['results']:
                 if res['success']:
-                    click.echo(f"  ✓ {res['input_path']} → {res['output_path']}")
+                    output_file = res.get('output_path', res.get('pdf_path', 'N/A'))
+                    click.echo(f"  ✓ {res['input_path']} → {output_file}")
         
         if result['failed'] > 0:
             click.echo("\n❌ 失败的文件:")
