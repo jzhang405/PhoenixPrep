@@ -15,12 +15,9 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 # 导入服务模块
-from services.file_upload import FileUploadService
-from services.document_parser import DocumentParserManager
-from services.question_service import QuestionService
-from services.analysis_service import AnalysisService
-from services.mistake_analysis import MistakeAnalysisService
-from services.question_answer_matcher import QuestionAnswerMatcher
+from src.services.document_parser import DocumentParserManager
+from src.services.mistake_analysis import MistakeAnalysisService
+from src.services.question_answer_matcher import QuestionAnswerMatcher
 
 # 创建FastAPI应用实例
 app = FastAPI()
@@ -62,7 +59,6 @@ async def process_file(file_path, file_type):
         click.echo(f"处理文件: {file_path} (类型: {file_type})")
         
         # 初始化服务
-        upload_service = FileUploadService()
         parser_manager = DocumentParserManager()
         
         # 模拟文件上传
@@ -85,91 +81,91 @@ def questions():
     """题目管理相关命令"""
     pass
 
-@questions.command()
-@click.option('--subject', help='科目筛选')
-@click.option('--difficulty', type=click.Choice(['easy', 'medium', 'hard']), help='难度筛选')
-@click.option('--limit', default=10, help='返回数量限制')
-async def list(subject, difficulty, limit):
-    """列出题目"""
-    try:
-        question_service = QuestionService()
-        filters = {}
-        if subject:
-            filters['subject'] = subject
-        if difficulty:
-            filters['difficulty'] = difficulty
-        
-        questions = await question_service.get_questions(filters, limit)
-        
-        click.echo(f"找到 {len(questions)} 个题目:")
-        for i, q in enumerate(questions, 1):
-            click.echo(f"  {i}. ID: {q.get('id')}, 科目: {q.get('subject')}, 难度: {q.get('difficulty')}")
-            click.echo(f"     内容: {q.get('content', '')[:50]}...")
-            
-    except Exception as e:
-        click.echo(f"获取题目列表时出错: {str(e)}")
+# @questions.command()
+# @click.option('--subject', help='科目筛选')
+# @click.option('--difficulty', type=click.Choice(['easy', 'medium', 'hard']), help='难度筛选')
+# @click.option('--limit', default=10, help='返回数量限制')
+# async def list(subject, difficulty, limit):
+#     """列出题目"""
+#     try:
+#         question_service = QuestionService()
+#         filters = {}
+#         if subject:
+#             filters['subject'] = subject
+#         if difficulty:
+#             filters['difficulty'] = difficulty
+#         
+#         questions = await question_service.get_questions(filters, limit)
+#         
+#         click.echo(f"找到 {len(questions)} 个题目:")
+#         for i, q in enumerate(questions, 1):
+#             click.echo(f"  {i}. ID: {q.get('id')}, 科目: {q.get('subject')}, 难度: {q.get('difficulty')}")
+#             click.echo(f"     内容: {q.get('content', '')[:50]}...")
+#             
+#     except Exception as e:
+#         click.echo(f"获取题目列表时出错: {str(e)}")
 
-@questions.command()
-@click.argument('question_id')
-async def get(question_id):
-    """获取单个题目详情"""
-    try:
-        question_service = QuestionService()
-        question = await question_service.get_question(question_id)
-        
-        if question:
-            click.echo(f"题目详情:")
-            click.echo(f"  ID: {question.get('id')}")
-            click.echo(f"  科目: {question.get('subject')}")
-            click.echo(f"  难度: {question.get('difficulty')}")
-            click.echo(f"  内容: {question.get('content')}")
-            click.echo(f"  答案: {question.get('answer')}")
-            click.echo(f"  解析: {question.get('explanation')}")
-        else:
-            click.echo(f"未找到题目: {question_id}")
-            
-    except Exception as e:
-        click.echo(f"获取题目详情时出错: {str(e)}")
+# @questions.command()
+# @click.argument('question_id')
+# async def get(question_id):
+#     """获取单个题目详情"""
+#     try:
+#         question_service = QuestionService()
+#         question = await question_service.get_question(question_id)
+#         
+#         if question:
+#             click.echo(f"题目详情:")
+#             click.echo(f"  ID: {question.get('id')}")
+#             click.echo(f"  科目: {question.get('subject')}")
+#             click.echo(f"  难度: {question.get('difficulty')}")
+#             click.echo(f"  内容: {question.get('content')}")
+#             click.echo(f"  答案: {question.get('answer')}")
+#             click.echo(f"  解析: {question.get('explanation')}")
+#         else:
+#             click.echo(f"未找到题目: {question_id}")
+#             
+#     except Exception as e:
+#         click.echo(f"获取题目详情时出错: {str(e)}")
 
 @cli.group()
 def analysis():
     """学习分析相关命令"""
     pass
 
-@analysis.command()
-@click.argument('student_id')
-async def performance(student_id):
-    """获取学生表现分析"""
-    try:
-        analysis_service = AnalysisService()
-        performance_data = await analysis_service.get_student_performance(student_id)
-        
-        click.echo(f"学生 {student_id} 表现分析:")
-        click.echo(f"  总体得分: {performance_data.get('overall_score', 0)}")
-        click.echo(f"  知识点掌握情况:")
-        
-        for knowledge_point in performance_data.get('knowledge_points', []):
-            click.echo(f"    - {knowledge_point.get('name')}: {knowledge_point.get('mastery_level')}%")
-            
-        click.echo(f"  薄弱环节: {', '.join(performance_data.get('weak_areas', []))}")
-        
-    except Exception as e:
-        click.echo(f"获取表现分析时出错: {str(e)}")
+# @analysis.command()
+# @click.argument('student_id')
+# async def performance(student_id):
+#     """获取学生表现分析"""
+#     try:
+#         analysis_service = AnalysisService()
+#         performance_data = await analysis_service.get_student_performance(student_id)
+#         
+#         click.echo(f"学生 {student_id} 表现分析:")
+#         click.echo(f"  总体得分: {performance_data.get('overall_score', 0)}")
+#         click.echo(f"  知识点掌握情况:")
+#         
+#         for knowledge_point in performance_data.get('knowledge_points', []):
+#             click.echo(f"    - {knowledge_point.get('name')}: {knowledge_point.get('mastery_level')}%")
+#             
+#         click.echo(f"  薄弱环节: {', '.join(performance_data.get('weak_areas', []))}")
+#         
+#     except Exception as e:
+#         click.echo(f"获取表现分析时出错: {str(e)}")
 
-@analysis.command()
-@click.argument('student_id')
-async def recommendations(student_id):
-    """获取学习建议"""
-    try:
-        analysis_service = AnalysisService()
-        recommendations = await analysis_service.get_recommendations(student_id)
-        
-        click.echo(f"学生 {student_id} 学习建议:")
-        for i, rec in enumerate(recommendations, 1):
-            click.echo(f"  {i}. {rec.get('type')}: {rec.get('content')}")
-            
-    except Exception as e:
-        click.echo(f"获取学习建议时出错: {str(e)}")
+# @analysis.command()
+# @click.argument('student_id')
+# async def recommendations(student_id):
+#     """获取学习建议"""
+#     try:
+#         analysis_service = AnalysisService()
+#         recommendations = await analysis_service.get_recommendations(student_id)
+#         
+#         click.echo(f"学生 {student_id} 学习建议:")
+#         for i, rec in enumerate(recommendations, 1):
+#             click.echo(f"  {i}. {rec.get('type')}: {rec.get('content')}")
+#             
+#     except Exception as e:
+#         click.echo(f"获取学习建议时出错: {str(e)}")
 
 @cli.group()
 def test():
@@ -196,21 +192,17 @@ def services():
     try:
         click.echo("测试服务功能...")
         
-        # 测试文件上传服务
-        upload_service = FileUploadService()
-        click.echo("✓ 文件上传服务初始化成功")
-        
         # 测试文档解析服务
         parser_manager = DocumentParserManager()
         click.echo("✓ 文档解析服务初始化成功")
         
-        # 测试题目服务
-        question_service = QuestionService()
-        click.echo("✓ 题目服务初始化成功")
+        # 测试错题分析服务
+        mistake_service = MistakeAnalysisService()
+        click.echo("✓ 错题分析服务初始化成功")
         
-        # 测试分析服务
-        analysis_service = AnalysisService()
-        click.echo("✓ 分析服务初始化成功")
+        # 测试试题-答案匹配服务
+        matcher = QuestionAnswerMatcher()
+        click.echo("✓ 试题-答案匹配服务初始化成功")
         
         click.echo("所有服务测试通过!")
         
@@ -374,7 +366,7 @@ async def parse(input_path, output_path, prompt):
         click.echo(f"解析文档: {input_path}")
         
         # 初始化Logics-Parsing服务
-        from services.logics_parsing_service import LogicsParsingService
+        from src.services.logics_parsing_service import LogicsParsingService
         logics_service = LogicsParsingService()
         
         # 检查服务状态
@@ -412,8 +404,8 @@ async def parse(input_path, output_path, prompt):
 async def status():
     """检查文档解析服务状态"""
     try:
-        from services.logics_parsing_service import LogicsParsingService
-        from services.document_parser import DocumentParserManager
+        from src.services.logics_parsing_service import LogicsParsingService
+        from src.services.document_parser import DocumentParserManager
         
         click.echo("检查文档解析服务状态...")
         
@@ -451,7 +443,7 @@ async def status():
 def download_model():
     """下载Logics-Parsing模型"""
     try:
-        from services.logics_parsing_service import LogicsParsingService
+        from src.services.logics_parsing_service import LogicsParsingService
         
         click.echo("开始下载Logics-Parsing模型...")
         
@@ -477,7 +469,7 @@ async def batch_parse(input_files, output_dir):
         click.echo(f"批量解析 {len(input_files)} 个文件...")
         
         # 初始化Logics-Parsing服务
-        from services.logics_parsing_service import LogicsParsingService
+        from src.services.logics_parsing_service import LogicsParsingService
         logics_service = LogicsParsingService()
         
         # 批量转换

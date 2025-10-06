@@ -4,9 +4,22 @@
 """
 from typing import Dict, List, Optional
 import asyncio
-from ..agents.document_analyzer import DocumentAnalyzerAgent
-from ..agents.knowledge_analyzer import KnowledgeAnalyzerAgent
-from ..agents.question_generator import QuestionGeneratorAgent
+
+# 临时占位符 - 实际实现需要这些代理
+class DocumentAnalyzerAgent:
+    async def analyze_image(self, image_content):
+        return {'content': '临时内容', 'knowledge_points': [], 'confidence_score': 0.0}
+
+class KnowledgeAnalyzerAgent:
+    async def analyze_mistake(self, question_content, knowledge_points, student_id, subject):
+        return {'mistake_type': '概念理解错误', 'difficulty_level': '中等', 'reason': '概念理解不清晰'}
+    
+    async def generate_explanation(self, question_content, mistake_type, difficulty_level):
+        return '临时题目讲解'
+
+class QuestionGeneratorAgent:
+    async def generate_recommendations(self, student_id, knowledge_points, mistake_type, count):
+        return []
 
 class MistakeAnalysisService:
     """错题分析服务"""

@@ -1,6 +1,7 @@
 """
 Logics-Parsing 文档解析服务
 集成 Alibaba Logics-Parsing 项目，将PDF/图片转换为HTML
+使用优化的CPU + FP16配置
 """
 
 import os
@@ -11,6 +12,9 @@ from typing import Dict, List, Optional
 from pathlib import Path
 import shutil
 import click
+
+# 导入优化的服务
+from .optimized_logics_parsing import OptimizedLogicsParsingService
 
 class LogicsParsingService:
     """Logics-Parsing 文档解析服务"""
@@ -28,44 +32,73 @@ class LogicsParsingService:
         else:
             self.logics_parsing_path = logics_parsing_path
         
-        # 使用项目内的模型存储路径
+        # 使用本地缓存中的模型路径
+        home_dir = os.path.expanduser("~")
+        self.model_path = os.path.join(home_dir, ".cache/modelscope/hub/models/Alibaba-DT/Logics-Parsing")
+        
+        # 使用项目内的输出目录
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-        self.model_path = os.path.join(project_root, "data/models/logics-parsing")
         self.output_dir = os.path.join(project_root, "data/parsed-html")
         
-        # 确保目录存在
-        os.makedirs(self.model_path, exist_ok=True)
+        # 确保输出目录存在
         os.makedirs(self.output_dir, exist_ok=True)
         
-        self.ensure_model_downloaded()
+        # 初始化优化的服务
+        self.optimized_service = OptimizedLogicsParsingService(self.model_path)
+        
+        # 检查模型是否存在
+        self.check_model_exists()
     
-    def ensure_model_downloaded(self):
-        """确保模型已下载"""
-        if not os.path.exists(self.model_path):
-            print(f"模型未找到，开始下载到: {self.model_path}")
+    def check_model_exists(self):
+        """检查模型文件是否存在，如果不存在则下载"""
+        # 检查主要模型文件是否存在
+        required_files = [
+            "model-00001-of-00004.safetensors",
+            "model-00002-of-00004.safetensors", 
+            "model-00003-of-00004.safetensors",
+            "model-00004-of-00004.safetensors",
+            "model.safetensors.index.json"
+        ]
+        
+        missing_files = []
+        for file in required_files:
+            file_path = os.path.join(self.model_path, file)
+            if not os.path.exists(file_path):
+                missing_files.append(file)
+        
+        if missing_files:
+            print(f"模型文件缺失: {missing_files}")
+            print(f"开始下载模型到: {self.model_path}")
             self.download_model()
         else:
-            print(f"模型已存在: {self.model_path}")
+            print(f"模型文件完整: {self.model_path}")
     
     def download_model(self):
-        """下载Logics-Parsing模型"""
+        """使用modelscope CLI下载Logics-Parsing模型"""
         try:
-            # 直接集成下载逻辑，不使用子进程
-            model_dir = self.model_path
-            if not os.path.exists(model_dir):
-                os.makedirs(model_dir)
+            # 确保模型目录存在
+            os.makedirs(self.model_path, exist_ok=True)
             
-            # 使用modelscope下载
-            from modelscope import snapshot_download
-            model_name = "Alibaba-DT/Logics-Parsing"
+            # 使用modelscope CLI命令下载
+            cmd = [
+                "modelscope", "download", 
+                "--model", "Alibaba-DT/Logics-Parsing",
+                "--local-dir", self.model_path
+            ]
             
-            click.echo(f"开始下载模型到: {model_dir}")
-            snapshot_download(repo_id=model_name, local_dir=model_dir)
+            print(f"执行命令: {' '.join(cmd)}")
+            result = subprocess.run(cmd, capture_output=True, text=True, check=True)
             
-            print(f"模型下载成功到: {self.model_path}")
+            if result.returncode == 0:
+                print(f"模型下载成功到: {self.model_path}")
+                print(result.stdout)
+            else:
+                print(f"模型下载失败: {result.stderr}")
+                raise Exception(f"模型下载失败: {result.stderr}")
                 
-        except ImportError:
-            print("错误: 未安装modelscope库，请运行: pip install modelscope")
+        except subprocess.CalledProcessError as e:
+            print(f"下载模型时出错: {str(e)}")
+            print(f"错误输出: {e.stderr}")
             raise
         except Exception as e:
             print(f"下载模型时出错: {str(e)}")
@@ -105,14 +138,18 @@ class LogicsParsingService:
                     f"{input_name}_parsed.html"
                 )
             
-            # 运行Logics-Parsing推理
-            inference_script = os.path.join(self.logics_parsing_path, "inference.py")
+            # 运行修改版的Logics-Parsing推理（支持macOS）
+            inference_script = os.path.join(os.path.dirname(__file__), "..", "..", "inference_macos.py")
+            
+            # 使用绝对路径
+            abs_input_path = os.path.abspath(input_path)
+            abs_output_path = os.path.abspath(output_path)
             
             cmd = [
                 "python", inference_script,
                 "--model_path", self.model_path,
-                "--image_path", input_path,
-                "--output_path", output_path,
+                "--image_path", abs_input_path,
+                "--output_path", abs_output_path,
                 "--prompt", prompt
             ]
             
@@ -271,3 +308,24 @@ class LogicsParsingService:
             'requirements': requirements,
             'model_path': self.model_path
         }
+    
+    async def parse_text_directly(self, text: str) -> Dict:
+        """
+        直接使用优化的服务解析文本
+        
+        Args:
+            text: 输入文本
+            
+        Returns:
+            解析结果
+        """
+        try:
+            print("使用优化的CPU + FP16服务解析文本...")
+            result = await self.optimized_service.parse_document(text)
+            return result
+        except Exception as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'message': '文本解析失败'
+            }

@@ -8,7 +8,11 @@ import re
 from difflib import SequenceMatcher
 
 from ..services.document_parser import DocumentParserManager
-from ..agents.document_analyzer import DocumentAnalyzerAgent
+
+# 临时占位符
+class DocumentAnalyzerAgent:
+    async def analyze_image(self, image_content):
+        return {'content': '临时内容', 'knowledge_points': [], 'confidence_score': 0.0}
 
 class QuestionAnswerMatcher:
     """试题-答案匹配服务"""
