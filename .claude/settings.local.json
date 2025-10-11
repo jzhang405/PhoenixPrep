@@ -27,7 +27,8 @@
       "Bash(pip show:*)",
       "Bash(pip uninstall:*)",
       "Bash(source:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(git rm:*)"
     ],
     "deny": []
   }
