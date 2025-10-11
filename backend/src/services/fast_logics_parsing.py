@@ -56,6 +56,17 @@ class FastLogicsParsingService:
                     f"{input_name}_parsed.html"
                 )
             
+            # 检查输出文件是否已存在且有效
+            if os.path.exists(output_path) and os.path.getsize(output_path) > 1000:
+                print(f"✅ 跳过已存在文件: {input_path}")
+                return {
+                    'success': True,
+                    'input_path': input_path,
+                    'output_path': output_path,
+                    'skipped': True,
+                    'message': '文件已存在，跳过解析'
+                }
+            
             print(f"开始解析文档: {input_path}")
             print(f"使用API: {api_name}")
             
